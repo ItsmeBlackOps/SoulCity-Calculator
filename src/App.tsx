@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calculator, PackageSearch, Hammer, RefreshCw, Plus, Minus, Watch, Diamond, Gem, Link, Gamepad, Laptop, Camera, Smartphone, ChevronDown } from 'lucide-react';
+import { PackageSearch, Hammer, RefreshCw, Plus, Minus, Watch, Diamond, Gem, Link, Gamepad, Laptop, Camera, Smartphone, ChevronDown } from 'lucide-react';
 
 const STACK_NOTE_VALUE = 650;
 const ROLL_OF_CASH_VALUE = 575;
@@ -171,7 +171,7 @@ function App() {
 
         <button
           onClick={() => handleIncrementBy(itemName, -1)}
-          className="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-indigo-900/20 border rounded hover:bg-indigo-800/30 transition-colors text-indigo-200 border-indigo-700/50"
+          className="flex items-center gap-1 px-2 py-0.5 h-[24px] text-xs font-medium bg-indigo-900/20 border rounded hover:bg-indigo-800/30 transition-colors text-indigo-200 border-indigo-700/50"
         >
           <Minus className="w-3 h-3" />
         </button>
@@ -185,14 +185,14 @@ function App() {
               handleQuantityChange(itemName, '0');
             }
           }}
-          className="flex-1 px-3 py-1 bg-indigo-900/20 border rounded text-indigo-200 border-indigo-700/50 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 placeholder-indigo-400/30"
+          className="flex-1 px-3 py-1 h-[24px] bg-indigo-900/20 border rounded text-indigo-200 border-indigo-700/50 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 placeholder-indigo-400/30"
           placeholder="0"
           min="0"
         />
 
         <button
           onClick={() => handleIncrementBy(itemName, 1)}
-          className="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-indigo-900/20 border rounded hover:bg-indigo-800/30 transition-colors text-indigo-200 border-indigo-700/50"
+          className="flex items-center gap-1 px-2 py-0.5 h-[24px] text-xs font-medium bg-indigo-900/20 border rounded hover:bg-indigo-800/30 transition-colors text-indigo-200 border-indigo-700/50"
         >
           <Plus className="w-3 h-3" />
         </button>
