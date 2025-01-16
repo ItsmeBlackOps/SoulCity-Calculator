@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calculator, PackageSearch, Hammer, RefreshCw, Plus, Minus, Watch, Diamond, Gem, Link, Gamepad, Laptop, Camera, Smartphone, ChevronDown } from 'lucide-react';
+import { Calculator, PackageSearch, Hammer, RefreshCw, Plus, Minus, Watch, Diamond, Gem, Link, Gamepad, Laptop, Camera, Smartphone } from 'lucide-react';
 
 const STACK_NOTE_VALUE = 650;
 const ROLL_OF_CASH_VALUE = 575;
@@ -25,10 +25,6 @@ interface QuantityButtonsProps {
   itemName: string;
   value: number;
   onChange: (value: number) => void;
-  expandedButtons: string | null;
-  setExpandedButtons: (value: string | null) => void;
-  lastUsedValues: Record<string, number>;
-  setLastUsedValues: React.Dispatch<React.SetStateAction<Record<string, number>>>;
 }
 
 const itemIcons = {
@@ -79,28 +75,9 @@ const QuantityButtons: React.FC<QuantityButtonsProps> = ({
   itemName,
   value,
   onChange,
-  expandedButtons,
-  setExpandedButtons,
-  lastUsedValues,
-  setLastUsedValues
 }) => {
-  const isExpanded = expandedButtons === itemName;
-
   const handleIncrementBy = (amount: number) => {
-    const incrementAmount = Math.abs(amount) === 1 
-      ? (amount > 0 ? (lastUsedValues[itemName] || 1) : -(lastUsedValues[itemName] || 1))
-      : amount;
-
-    onChange(Math.max(0, (value || 0) + incrementAmount));
-  };
-
-  const handleDropdownSelect = (amount: number) => {
-    setLastUsedValues(prev => ({
-      ...prev,
-      [itemName]: Math.abs(amount)
-    }));
-    handleIncrementBy(amount);
-    setExpandedButtons(null);
+    onChange(Math.max(0, (value || 0) + amount));
   };
 
   const handleQuantityChange = (newValue: string) => {
@@ -113,29 +90,6 @@ const QuantityButtons: React.FC<QuantityButtonsProps> = ({
 
   return (
     <div className="flex gap-1.5 mt-1.5">
-      <div className="relative">
-        <button
-          onClick={() => setExpandedButtons(isExpanded ? null : itemName)}
-          className={`${buttonBaseClasses} w-[32px]`}
-        >
-          <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-        </button>
-        {isExpanded && (
-          <div className="absolute top-full left-0 mt-1 bg-indigo-900/90 rounded-lg shadow-lg border border-indigo-700/50 py-1 z-10">
-            {[-50, -10, -5].map(amount => (
-              <button
-                key={amount}
-                onClick={() => handleDropdownSelect(amount)}
-                className="w-full px-3 py-1 text-xs font-medium text-left hover:bg-indigo-800/50 transition-colors text-indigo-200 flex items-center gap-2"
-              >
-                <Minus className="w-3 h-3" />
-                {Math.abs(amount)}x
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
       <button
         onClick={() => handleIncrementBy(-1)}
         className={`${buttonBaseClasses} w-[32px]`}
@@ -163,29 +117,6 @@ const QuantityButtons: React.FC<QuantityButtonsProps> = ({
       >
         <Plus className="w-3.5 h-3.5" />
       </button>
-
-      <div className="relative">
-        <button
-          onClick={() => setExpandedButtons(isExpanded ? null : itemName)}
-          className={`${buttonBaseClasses} w-[32px]`}
-        >
-          <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-        </button>
-        {isExpanded && (
-          <div className="absolute top-full right-0 mt-1 bg-indigo-900/90 rounded-lg shadow-lg border border-indigo-700/50 py-1 z-10">
-            {[5, 10, 50].map(amount => (
-              <button
-                key={amount}
-                onClick={() => handleDropdownSelect(amount)}
-                className="w-full px-3 py-1 text-xs font-medium text-left hover:bg-indigo-800/50 transition-colors text-indigo-200 flex items-center gap-2"
-              >
-                <Plus className="w-3 h-3" />
-                {amount}x
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
     </div>
   );
 };
@@ -194,8 +125,6 @@ function App() {
   const [selectedItems, setSelectedItems] = useState<Record<string, number>>({});
   const [totalValue, setTotalValue] = useState<number>(0);
   const [activeCategory, setActiveCategory] = useState<'AutoExotic' | 'ScrapeYard'>('AutoExotic');
-  const [expandedButtons, setExpandedButtons] = useState<string | null>(null);
-  const [lastUsedValues, setLastUsedValues] = useState<Record<string, number>>({});
 
   const calculateAutoExoticValue = (item: AutoExoticItem): number => {
     let value = 0;
@@ -204,17 +133,6 @@ function App() {
     if (item.ln) value += item.ln * LOOSE_NOTE_VALUE;
     return value;
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (expandedButtons && !(event.target as Element).closest('.relative')) {
-        setExpandedButtons(null);
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, [expandedButtons]);
 
   useEffect(() => {
     const total = Object.entries(selectedItems).reduce((acc, [itemName, quantity]) => {
@@ -238,14 +156,15 @@ function App() {
 
   return (
     <div 
-      // className="min-h-screen bg-[#0a0b1e] bg-gradient-to-br from-indigo-900/20 to-purple-900/20 p-3 md:p-4"
+      className="min-h-screen bg-[#0a0b1e] bg-gradient-to-br from-indigo-900/20 to-purple-900/20 p-3 md:p-4"
       style={{
         backgroundImage: `url('${window.innerWidth <= 768 ? 'https://soulcity.gg/Soulcity_Cover_Mobile.jpg' : 'https://soulcity.gg/Soulcity_Cover.jpg'}')`,
-        // backgroundSize: 'cover',
+        backgroundSize: 'cover',
         backgroundPosition: 'center',
+        backgroundBlend: 'overlay'
       }}
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto pb-16">
         <div className="flex items-center gap-2 mb-4">
           <Calculator className="w-6 h-6 text-indigo-400" />
           <h1 className="text-2xl font-bold text-indigo-200">SoulCity Rate Calculator</h1>
@@ -278,7 +197,7 @@ function App() {
           </div>
 
           <div className="p-3">
-            <div className="grid gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
               {items
                 .filter(item => item.category === activeCategory)
                 .map(item => {
@@ -311,10 +230,6 @@ function App() {
                         itemName={item.name}
                         value={selectedItems[item.name] || 0}
                         onChange={(value) => setSelectedItems(prev => ({ ...prev, [item.name]: value }))}
-                        expandedButtons={expandedButtons}
-                        setExpandedButtons={setExpandedButtons}
-                        lastUsedValues={lastUsedValues}
-                        setLastUsedValues={setLastUsedValues}
                       />
                     </div>
                   );
