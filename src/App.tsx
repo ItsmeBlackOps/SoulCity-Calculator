@@ -51,6 +51,7 @@ const items: Item[] = [
   { name: "Pair of Yeezys", ln: 3, category: "AutoExotic", icon: "Diamond" },
   { name: "Wedding Ring", stack: 2, category: "AutoExotic", icon: "Gem" },
   { name: "Yellow Diamond", ln: 5, category: "AutoExotic", icon: "Diamond" },
+  { name: "Ipad", stack: 3, category: "AutoExotic", icon: "Diamond" },
   { name: "Blue Diamond", stack: 1, ln: 2, category: "AutoExotic", icon: "Diamond" },
   { name: "Watch", value: 100, category: "ScrapeYard", icon: "Watch" },
   { name: "Oakley Sunglasses", value: 55, category: "ScrapeYard", icon: "Diamond" },
